@@ -12,6 +12,7 @@ require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .'DataLay
 require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .'DataLayer'. DIRECTORY_SEPARATOR .'ModelGateway.php';
 require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .'DataProviders'. DIRECTORY_SEPARATOR .'HSAItemsTestGenerator.php';
 require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .'DataProviders'. DIRECTORY_SEPARATOR .'HSAKYBSiteItemsLoader.php';
+require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .'DataProviders'. DIRECTORY_SEPARATOR .'HSATokikoSiteItemsLoader.php';
 require_once dirname(dirname(__FILE__)). DIRECTORY_SEPARATOR . "Helpers" . DIRECTORY_SEPARATOR . "Item" . DIRECTORY_SEPARATOR . "ItemsTable.php";
 
 class Controller_Item extends Controller_Base {
@@ -57,6 +58,25 @@ class Controller_Item extends Controller_Base {
         }*/
         $this->index();
     }
+
+    function clean() {
+        $this->itemGateway->CreateTable();
+        $this->index();   
+    }
+
+    function loadKYB() {
+        set_time_limit(3*60*60);//3 hours to parse
+        $filename = dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .'FirstUpload'. DIRECTORY_SEPARATOR .'KYBSIte.csv';
+        HSAKYBSiteItemsLoader::UploadFile($filename);
+        $this->index();   
+    }
+
+    function loadTokiko() {
+        set_time_limit(3*60*60);//3 hours to parse
+        $filename = dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .'FirstUpload'. DIRECTORY_SEPARATOR .'tokikoSite.csv';
+        HSATokikoSiteItemsLoader::UploadFile($filename);
+        $this->index();   
+    }
     
     function search() {
         $marks = array();
@@ -100,7 +120,7 @@ class Controller_Item extends Controller_Base {
         
         $items = array();
         try {
-            $dbResult = $this->itemGateway->FindItemsByMarkName($markName);
+            $dbResult = $this->itemGateway->FindItemsByMarkName($markName, 0, 20);
             while (($item = $this->itemGateway->Fetch($dbResult)) != NULL) {
                 $items[] = $item;
             }

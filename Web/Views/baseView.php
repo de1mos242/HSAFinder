@@ -25,11 +25,18 @@
                         <li><a href="<?=$_SERVER['PHP_SELF']?>?route=Item/search">Поиск</a></li>
                     </ul>
                     <ul class="nav pull-right">
-                        
-                        <li><a data-toggle="modal" href="#upload_catalog">Загрузить каталог</a></li>
-                        <li><a href="<?=$_SERVER['PHP_SELF']?>?route=Item/generate">Сгенерировать тестовый каталог</a></li>
-                        <li><a data-toggle="modal" href="#upload_price">Загрузить новый прайс</a></li>
-                        <li><a href="<?=$_SERVER['PHP_SELF']?>?route=Product/generate">Сгенерировать тестовый прайс</a></li>
+                      <li class="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Работа с каталогом<b class="caret"></b></a>
+                          <ul class="dropdown-menu">
+                            <li><a href="<?=$_SERVER['PHP_SELF']?>?route=Item/clean">Очистить данные каталога</a>
+                            <li><a href="<?=$_SERVER['PHP_SELF']?>?route=Item/loadKYB">Загрузить каталог KYB</a>
+                            <li><a href="<?=$_SERVER['PHP_SELF']?>?route=Item/loadTokiko">Загрузить каталог Tokiko</a>
+                            <li><a data-toggle="modal" href="#upload_catalog">Загрузить каталог</a></li>
+                            <li><a href="<?=$_SERVER['PHP_SELF']?>?route=Item/generate">Сгенерировать тестовый каталог</a></li>
+                            <li><a data-toggle="modal" href="#upload_price">Загрузить новый прайс</a></li>
+                            <li><a href="<?=$_SERVER['PHP_SELF']?>?route=Product/generate">Сгенерировать тестовый прайс</a></li>
+                          </ul>
+                      </li>
                     </ul>
                 </div>
             </div>

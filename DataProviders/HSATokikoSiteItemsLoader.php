@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Description of HSAJapanItesLoader
+ * Description of HSATokikoSiteItemsLoader
  *
  * @author de1mos <de1m0s242@gmail.com>
  */
@@ -9,7 +9,7 @@
 require_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR .'DataLayer'. DIRECTORY_SEPARATOR .'HSAItemGateway.php';
 require_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR .'Helpers'. DIRECTORY_SEPARATOR .'CSVParser.php';
 
-class HSAKYBSiteItemsLoader {
+class HSATokikoSiteItemsLoader {
     const REAR = "REAR";
     const FRONT = "FRONT";
     const GAS = "GAS";
@@ -25,16 +25,20 @@ class HSAKYBSiteItemsLoader {
     private $rawLine = '';
     
     private $mark = '';
-    private $model = '';
+    private $models = '';
     private $year = '';
     private $body = '';
     
     private $handDirections = array();
     private $brandNumber = '';
-    private $type = '';
-    
+    private $types = array();
+    private $oems = array();
+    private $lineDirections = array();
+
+    private $resultArray = array();
+
     public static function Create($itemsGateway) {
-        $loader = new HSAKYBSiteItemsLoader();
+        $loader = new HSATokikoSiteItemsLoader();
         $loader->gateway = $itemsGateway;
         return $loader;
     }
@@ -46,13 +50,12 @@ class HSAKYBSiteItemsLoader {
         //$this->db->StartTransaction();
         $gateway = HSAItemGateway::Create($db);
         //$gateway->CreateTable();
-        $fixture = HSAKYBSiteItemsLoader::Create($gateway);
+        $fixture = HSATokikoSiteItemsLoader::Create($gateway);
         $fixture->ParseFile($filename);
         $end = date("r");
+        
         //echo "started at $start\nended at $end\n";
     }
-
-    //public static function AsyncUpload($filename)
     
     public function ParseFile($filename) {
         $this->file = fopen($filename, "r");
@@ -97,7 +100,7 @@ class HSAKYBSiteItemsLoader {
             return false;
         $this->rawLine = $this->cleanLine($line);
         
-        echo $this->rawLine;
+        //echo $this->rawLine;
         $this->line = $this->parser->ParseLine($this->rawLine);
         return true;
     }
@@ -109,52 +112,90 @@ class HSAKYBSiteItemsLoader {
     
     private function processLine() {
         $this->mark = $this->line[0];
-        $this->model = $this->line[1];
+        $this->models = $this->parseModels($this->line[1]);
         $this->body = $this->line[2];
-        $this->brandNumber = $this->line[5];
+        $this->year = $this->line[3];
         
-        $this->parseYear();
-        $this->parseHandDirections();
-        $this->parseLineDirection();
-        $this->parseType();
+        $this->parseItems();
 
         $this->generateItems();
     }
 
-    private function parseYear() {
-        $this->year = $this->line[3] . " - " . $this->line[4];
+    private function parseModels($cell) {
+    	return mb_split(" \/ ", $cell);
     }
-    
-    private function parseHandDirections() {
+
+    private function parseHandDirections($cell) {
         $result = array();
-        if (mb_eregi("left", $this->line[7]))
+        if (mb_eregi("^L ", $cell))
             $this->handDirections = array(self::LEFT);
-        elseif (mb_eregi("right", $this->line[7]))
+        elseif (mb_eregi("^R ", $cell))
             $this->handDirections = array(self::RIGHT);
         else
             $this->handDirections = array(self::RIGHT,self::LEFT);
     }
 
-    private function parseLineDirection() {
-        if (mb_eregi("front", $this->line[7]))
-            $this->lineDirection = self::FRONT;
-        else
-            $this->lineDirection = self::REAR;
+    private function parseOEMs($cell) {
+        $cell = trim($cell);
+    	if ($cell == '')
+    		return array();
+        $result = array();
+    	$rawArray = mb_split(" ", $cell);
+        foreach ($rawArray as $value) {
+            if ($value != '' && array_search($value, $result) === FALSE)
+                $result[] = $value;
+        }
+        return $result;
     }
 
-    private function parseType() {
-        $this->type = '';
+    private function parseItems() {
+        $result = array();
+        $result["FRONT"] = array("data" => $this->parseTypes($this->line[4],$this->line[5]), 
+        	"oems" => $this->parseOEMs($this->line[6]));
+        $result["REAR"] = array("data" => $this->parseTypes($this->line[7],$this->line[8]), 
+        	"oems" => $this->parseOEMs($this->line[9]));
+        $this->resultArray = $result;
+    }
+
+    private function parseTypes($oil, $gas) {
+    	$oils = array();
+    	if ($this->getNumber($oil) != '') {
+	    	$this->parseHandDirections($oil);
+	    	foreach ($this->handDirections as $handDirection) {
+	    		$oils[$handDirection] = $this->getNumber($oil);
+	    	}
+	    }
+	    $gases = array();
+    	if ($this->getNumber($gas) != '') {
+	    	$this->parseHandDirections($gas);
+	    	foreach ($this->handDirections as $handDirection) {
+	    		$gases[$handDirection] = $this->getNumber($gas);
+	    	}
+	    }
+	    return array("OIL" => $oils, "GAS" => $gases);
+    }
+
+    private function getNumber($cell) {
+    	$value = mb_eregi_replace("^[LR] ", "", $cell);
+    	return $value;
     }
     
     
     private function generateItems() {
-        $model = Model::Create(Mark::Create($this->mark), $this->model);
-        foreach ($this->handDirections as $handDirection) {
-            $item = HSAItem::Create($model, 
-                $this->year, $this->body, 
-                $this->brandNumber, array(),
-                $handDirection, $this->lineDirection, $this->type, "KYB");
-            $this->gateway->SaveItem($item);
+    	foreach ($this->models as $modelName) {
+	    	$model = Model::Create(Mark::Create($this->mark), $modelName);
+	        foreach ($this->resultArray as $lineDirection => $data) {
+	        	foreach ($data['data'] as $type => $handDirections) {
+	        		foreach ($handDirections as $handDirection => $brandNumber) {
+	        			$item = HSAItem::Create($model, 
+			                $this->year, $this->body, 
+			                $brandNumber, $data['oems'],
+			                $handDirection, $lineDirection, $type, "TOKIKO");
+			            $this->gateway->SaveItem($item);
+	        		}
+	        	}
+	        }
+
         }
     }
 }
