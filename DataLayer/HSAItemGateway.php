@@ -338,9 +338,9 @@ class HSAItemGateway {
             $page = 0;
         if (!isset($pageSize))
             $pageSize = 20;
-        $start = $page*$pageSize+1;
-        $end = $start + $pageSize-1;
-        return " limit $start,$end";
+        $start = $page*$pageSize;
+        //$end = $page * $pageSize;
+        return " limit $start,$pageSize";
     }
 }
 
