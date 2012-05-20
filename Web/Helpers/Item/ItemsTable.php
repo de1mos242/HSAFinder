@@ -20,7 +20,7 @@ class ItemsTable {
                         '<td>Цена'.
                         '<td>Количество'.
                         '<td>Описание'.
-            '<tbody>';
+            '<tbody id="ItemsTableBody">';
         $body = ItemsTable::GetRows($items);
         
         $end = '</tbody></table>';

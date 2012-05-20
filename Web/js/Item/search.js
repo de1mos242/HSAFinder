@@ -82,7 +82,7 @@ function appendItems() {
 function appendTable(itemsTable) {
     if (itemsTable != '')
         currentPage++;
-    $('#ItemsTable').append(itemsTable);
+    $('#ItemsTableBody').append(itemsTable);
 }
 
 function updateItems() {
@@ -105,7 +105,7 @@ function updateItems() {
 }
 
 function updateTable(itemsTable) {
-    $('#ItemsTable').html(itemsTable);
+    $('#ItemsTableBody').html(itemsTable);
 }
 
 function fillComboBox(className, items) {
