@@ -143,7 +143,7 @@ class ModelGateway {
     public function FindAllModelsByMarkNameOrderName($markName) {
         $query = "select model.id from ".self::TABLE_NAME. ' as model ' .
                 ' inner join '.MarkGateway::TABLE_NAME. ' as mark on model.MARK_ID = mark.id '.
-                " where mark.NAME = '".$markName."'";
+                " where mark.NAME = '".$markName."' order by model.NAME";
         return $this->db->ExecuteQuery($query);
     }
 }

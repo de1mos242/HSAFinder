@@ -95,13 +95,16 @@ class HSATokikoSiteItemsLoader {
     }
     
     private function ReadLine() {
-        $line = fgets($this->file, 512);
+        $line = fgets($this->file, 2048);
         if ($line == false) 
             return false;
         $this->rawLine = $this->cleanLine($line);
         
         //echo $this->rawLine;
         $this->line = $this->parser->ParseLine($this->rawLine);
+        if (count($this->line) < 2)
+            throw new Exception("Error parsing " . $this->rawLine . " orig = $line");
+            
         return true;
     }
     
@@ -127,9 +130,9 @@ class HSATokikoSiteItemsLoader {
 
     private function parseHandDirections($cell) {
         $result = array();
-        if (mb_eregi("^L ", $cell))
+        if (mb_eregi("^L", $cell))
             $this->handDirections = array(self::LEFT);
-        elseif (mb_eregi("^R ", $cell))
+        elseif (mb_eregi("^R", $cell))
             $this->handDirections = array(self::RIGHT);
         else
             $this->handDirections = array(self::RIGHT,self::LEFT);
@@ -176,7 +179,7 @@ class HSATokikoSiteItemsLoader {
     }
 
     private function getNumber($cell) {
-    	$value = mb_eregi_replace("^[LR] ", "", $cell);
+    	$value = mb_eregi_replace("^[LR][ ]?", "", $cell);
     	return $value;
     }
     
