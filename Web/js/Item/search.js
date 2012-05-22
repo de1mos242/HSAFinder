@@ -6,24 +6,18 @@ $(document).ready(function(){
     $('#markSelect').change(function(){  
         var markName = $(this).val();
         if (markName == '') {
-            $('#modelSelect').html('');
-            $('#modelSelect').attr('disabled', true);
+            disableElements(["modelSelect","yearSelect","bodySelect"]);
             return(false);
         }
         
         disableElements(["modelSelect","yearSelect","bodySelect"]);
         
-        $.ajax({  
-            type: "POST",  
-            url: self.location, 
-            data: "route=Item/searchByMark&requestType=JSON&selectedMark="+$('#markSelect').val(),
-            success: function(result){
-                var resultObject = jQuery.parseJSON(result);
-                fillComboBox("modelSelect", resultObject.models);
-                enableElements(["modelSelect"]);
-                updateTable(resultObject.items);
-            }  
-        });  
+        getModelsByMark($('#markSelect').val(), function(models){
+            fillComboBox("modelSelect", models);
+            enableElements(["modelSelect"]);
+        });
+        
+        updateItems();
     });
     
     $('#modelSelect').change(function(){  
@@ -108,24 +102,4 @@ function updateTable(itemsTable) {
     $('#ItemsTableBody').html(itemsTable);
 }
 
-function fillComboBox(className, items) {
-    var options = '<option value="empty"></option>';
-    //$(items).each(function() {
-    $.each(items,function(key, value) {
-        options += '<option value="' + value + '">' + value + '</option>';
-    });
-    $('#' +className).html(options);
-}
 
-function enableElements(classNames) {
-    $.each(classNames,function(key, value) {
-        $('#'+value).attr('disabled', false);
-    });
-}
-
-function disableElements(classNames) {
-    $.each(classNames,function(key, value) {
-        $('#'+value).attr('disabled', true);
-        $('#'+value).html('<option></option>');
-    });
-}

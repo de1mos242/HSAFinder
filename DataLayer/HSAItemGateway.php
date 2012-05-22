@@ -312,7 +312,7 @@ class HSAItemGateway {
 
         $query = "select id from ".self::TABLE_NAME;
         if ($modelId == NULL) 
-            return NULL;
+            return $this->FindItemsByMarkName($markName, $page, $pageSize);
 
         $query.= ' where MODEL_ID = ' . $modelId;
         if ($this->isVarSet($body))

@@ -8,7 +8,7 @@
                         <option value="empty"></option>
                         <?php
                             foreach ($registry->get("contentMark") as $mark) {
-                                echo '<option value="'.$mark->NameGet().'">'.$mark->NameGet()."</option>";
+                                echo '<option value="'.$mark.'">'.$mark."</option>";
                             }
                         ?>
                     </select>

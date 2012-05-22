@@ -10,6 +10,9 @@
         <? if (!is_null($registry->get("scriptFile"))) { ?>
             <script type="text/javascript" src="<?=dirname($_SERVER['PHP_SELF']).$registry->get('scriptFile')?>"></script>
         <? } ?>
+        <? if (!is_null($registry->get("commonControllerScriptFile"))) { ?>
+            <script type="text/javascript" src="<?=dirname($_SERVER['PHP_SELF']).$registry->get('commonControllerScriptFile')?>"></script>
+        <? } ?>
         <link href="<?=dirname($_SERVER['PHP_SELF'])?>/bootstrap/css/bootstrap.css" rel="stylesheet">
         <link href="<?=dirname($_SERVER['PHP_SELF'])?>/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
         

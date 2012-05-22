@@ -4,7 +4,7 @@ require_once dirname(__FILE__).DIRECTORY_SEPARATOR.  'HSAItemHelper.php';
 
 class ItemsTable {
     public static function GetTable($items) {
-        $header = '<table class="table" id="ItemsTable">'.
+        $header = '<table class="table table-striped table-bordered table-condensed" id="ItemsTable">'.
                 '<thead>'.
                     '<tr>'.
                         '<td>Марка'.
@@ -20,6 +20,8 @@ class ItemsTable {
                         '<td>Цена'.
                         '<td>Количество'.
                         '<td>Описание'.
+                        '<td>Изменить'.
+                        '<td>Удалить'.
             '<tbody id="ItemsTableBody">';
         $body = ItemsTable::GetRows($items);
         
@@ -30,6 +32,7 @@ class ItemsTable {
     public static function GetRows($items) {
         $body = '';
         foreach ($items as $item) {
+            $itemId = $item->IdGet();
             $body.="<tr>";
             $body.='<td>'.$item->ModelGet()->MarkGet()->NameGet();
             $body.="<td>".$item->ModelGet()->NameGet();
@@ -46,6 +49,12 @@ class ItemsTable {
                 $body.="<td>".$item->ProductGet()->AmountGet();
                 $body.="<td>".$item->ProductGet()->DescriptionGet();
             }
+            else {
+                $body.='<td/><td/><td/>';
+            }
+
+            $body.="<td><a href=\"".$_SERVER['PHP_SELF']."?route=Item/edit&itemId=$itemId\" class=\"btn btn-warning HSAButtonEdit\">Edit</a>";
+            $body.="<td><a href=\"".$_SERVER['PHP_SELF']."?route=Item/delete&itemId=$itemId\" class=\"btn btn-danger HSAButtonEdit\">Delete</a>";
             $body.="<tr/>";
         }
         return $body;

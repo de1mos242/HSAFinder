@@ -79,17 +79,6 @@ class Controller_Item extends Controller_Base {
     }
     
     function search() {
-        $marks = array();
-        try {
-            $dbResult = $this->markGateway->FindAllMarksOrderName();
-            while (($mark = $this->markGateway->Fetch($dbResult)) != NULL) {
-                $marks[] = $mark;
-            }
-        }
-        catch (Exception $ex) {
-            $this->registry->set("page_error", $ex->getMessage());
-        }
-        
         $items = array();
         try {
             $dbResult = $this->itemGateway->FindPageItems(0,10);
@@ -103,35 +92,13 @@ class Controller_Item extends Controller_Base {
         
         $this->registry->set("content", $items);
         
-        $this->registry->set("contentMark", $marks);
+        $this->registry->set("contentMark", $this->getMarks());
         $this->registry->set("view", "search");
     }
-    
-    function searchByMark() {
-        $modelGateway = ModelGateway::Create($this->registry->get('db'));
-        $models = array();
+
+    function searchModels() {
         $markName = $this->registry->get('REQUEST_selectedMark');
-        if ($markName != 'empty') {
-            $dbResult = $modelGateway->FindAllModelsByMarkNameOrderName($markName);
-            while (($model = $modelGateway->Fetch($dbResult)) != NULL) {
-                $models[] = $model->NameGet();
-            }
-        }
-        
-        $items = array();
-        try {
-            $dbResult = $this->itemGateway->FindItemsByMarkName($markName, 0, 20);
-            while (($item = $this->itemGateway->Fetch($dbResult)) != NULL) {
-                $items[] = $item;
-            }
-        }
-        catch (Exception $ex) {
-            $this->registry->set("page_error", $ex->getMessage());
-        }
-        
-        $itemsTable = ItemsTable::GetTable($items);
-        $result = array('models'=>$models,'items'=>$itemsTable);
-        $this->registry->set("content", $result);
+        $this->registry->set("content", array('models'=>$this->getModels($markName)));
     }
     
     function searchByFields() {
@@ -168,6 +135,43 @@ class Controller_Item extends Controller_Base {
         
         $result = array('years'=>$years, 'bodies'=>$bodies);
         $this->registry->set("content", $result);
+    }
+
+    public function edit() {
+        $id = $this->registry->get('REQUEST_itemId');
+        $escaped_id = mysql_real_escape_string($id);
+        $item = $this->itemGateway->GetItemById($escaped_id);
+        if ($item == NULL) {
+            throw new Exception("Item not found");
+        }
+        $this->registry->set("content", $item);
+        
+        $this->registry->set("view", "form");
+        $this->registry->set("marks", $this->getMarks());
+        $this->registry->set("models", $this->getModels($item->ModelGet()->MarkGet()->NameGet()));
+        
+    }
+
+    private function getMarks() {
+        $marks = array();
+        $dbResult = $this->markGateway->FindAllMarksOrderName();
+        while (($mark = $this->markGateway->Fetch($dbResult)) != NULL) {
+            $marks[] = $mark->NameGet();
+        }
+        return $marks;
+    }
+
+    private function getModels($markName) {
+        $modelGateway = ModelGateway::Create($this->registry->get('db'));
+        $models = array();
+        if ($markName != 'empty') {
+            $dbResult = $modelGateway->FindAllModelsByMarkNameOrderName($markName);
+            while (($model = $modelGateway->Fetch($dbResult)) != NULL) {
+                $models[] = $model->NameGet();
+            }
+        }
+        
+        return $models;
     }
 }
 

@@ -70,6 +70,10 @@ class Router {
         if (is_file($js_file))
             $this->registry->set("scriptFile", '/js/'.$controller.'/'.$this->registry->get("view").".js");
 
+        $js_common_file = $this->js_path.$controller.DIRSEP."common.js";
+        if (is_file($js_file))
+            $this->registry->set("commonControllerScriptFile", '/js/'.$controller."/common.js");
+
         $registry = $this->registry;
         include $this->views_path.DIRSEP."baseView.php";
     }
