@@ -17,7 +17,7 @@ class HSAItem {
     private $handDirection;
     private $lineDirection;
     private $type;
-    private $id;
+    private $id = NULL;
     private $product;
     private $hsaType;
     
@@ -31,25 +31,25 @@ class HSAItem {
     	return $this->body;
     }
     public function BodySet($value) {
-    	$this->body = $value;
+    	$this->body = mysql_real_escape_string($value);
     }    
     public function YearGet() {
     	return $this->year;
     }
     public function YearSet($value) {
-    	$this->year = $value;
+    	$this->year = mysql_real_escape_string($value);
     }    
     public function HSATypeGet() {
         return $this->hsaType;
     }
     public function HSATypeSet($value) {
-        $this->hsaType = $value;
+        $this->hsaType = mysql_real_escape_string($value);
     }
     public function BrandNumberGet() {
     	return $this->brandNumber;
     }
     public function BrandNumberSet($value) {
-    	$this->brandNumber = $value;
+    	$this->brandNumber = mysql_real_escape_string($value);
     }
     
     public function OEMNumbersGet() {
@@ -72,27 +72,29 @@ class HSAItem {
     	return $this->handDirection;
     }
     public function HandDirectionSet($value) {
-    	$this->handDirection = $value;
+    	$this->handDirection = mysql_real_escape_string($value);
     }
     public function LineDirectionGet() {
     	return $this->lineDirection;
     }
     public function LineDirectionSet($value) {
-    	$this->lineDirection = $value;
+    	$this->lineDirection = mysql_real_escape_string($value);
     }
     public function TypeGet() {
     	return $this->type;
     }
     public function TypeSet($value) {
-    	$this->type = $value;
+    	$this->type = mysql_real_escape_string($value);
     }
     public function IdGet() {
     	return $this->id;
     }
     public function IdSet($value) {
+        if ($value == NULL)
+            $this->id = NULL;
     	if ($this->id != NULL)
     		throw new Exception ('Id already was setted');
-    	$this->id = $value;
+    	$this->id = mysql_real_escape_string($value);
     }
     public function ProductGet() {
         return $this->product;

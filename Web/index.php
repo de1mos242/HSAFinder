@@ -18,8 +18,9 @@ try {
     
     foreach ($_REQUEST as $key => $value) {
         $registry->set ('REQUEST_'.$key, $value);
+        //echo $registry->get('REQUEST_'.$key)."|$key|$value--- \r\n";
     }
-    
+
     $router = new Router($registry);
     $registry->set ('router', $router);
     $requestType = "HTML";

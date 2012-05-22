@@ -36,5 +36,3 @@
         echo ItemsTable::GetTable($registry->get("content"));
     ?>
 </div>
-
-<label id="debug1"></label><label id="debug2"></label>

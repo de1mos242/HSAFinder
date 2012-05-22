@@ -12,8 +12,15 @@ class Model {
     private $name;
     private $mark;
     
+    public function NameSet($value) {
+        $this->name = mysql_real_escape_string($value);
+    }
     public function NameGet() {
         return $this->name;
+    }
+
+    public function MarkSet($value) {
+        $this->mark = $value;
     }
     
     public function MarkGet() {

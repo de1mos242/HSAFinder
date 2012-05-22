@@ -137,6 +137,15 @@ class Controller_Item extends Controller_Base {
         $this->registry->set("content", $result);
     }
 
+    public function create() {
+        $this->registry->set("content", NULL);
+        
+        $this->registry->set("view", "form");
+        $marks = $this->getMarks();
+        $this->registry->set("marks", $marks);
+        $this->registry->set("models", $this->getModels($marks[0]));
+    }
+
     public function edit() {
         $id = $this->registry->get('REQUEST_itemId');
         $escaped_id = mysql_real_escape_string($id);
@@ -150,6 +159,18 @@ class Controller_Item extends Controller_Base {
         $this->registry->set("marks", $this->getMarks());
         $this->registry->set("models", $this->getModels($item->ModelGet()->MarkGet()->NameGet()));
         
+    }
+
+    public function delete() {
+        $id = $this->registry->get('REQUEST_itemId');
+        $escaped_id = mysql_real_escape_string($id);
+        $item = $this->itemGateway->GetItemById($escaped_id);
+        if ($item == NULL) {
+            throw new Exception("Item not found");
+        }
+        $this->itemGateway->DeleteItem($item);
+        
+        $this->search();
     }
 
     private function getMarks() {
@@ -172,6 +193,61 @@ class Controller_Item extends Controller_Base {
         }
         
         return $models;
+    }
+
+    public function save() {
+        $hsaTypeInput = $this->registry->get("REQUEST_HSATypeSelect");
+        if (!mb_eregi("KYB|TOKIKO", $hsaTypeInput)) {
+            throw new Exception("Error Processing Request");
+        }
+        $typeInput = $this->registry->get("REQUEST_TypeSelect");
+        if (!mb_eregi("empty|GAS|OIL", $typeInput)) {
+            throw new Exception("Error Processing Request");
+        }
+        if ($typeInput == "empty")
+            $typeInput = '';
+        $lineDirectionInput = $this->registry->get("REQUEST_LineDirectionSelect");
+        if (!mb_eregi("FRONT|REAR", $lineDirectionInput)) {
+            throw new Exception("Error Processing Request");
+        }
+        $handDirectionInput = $this->registry->get("REQUEST_HandDirectionSelect");
+        if (!mb_eregi("BOTH|RIGHT|LEFT", $handDirectionInput)) {
+            throw new Exception("Error Processing Request");
+        }
+        $handDirections = array($handDirectionInput);
+        if ($handDirectionInput == "BOTH")
+            $handDirections = array("RIGHT", "LEFT");
+        
+        $mark = new Mark();
+        $mark->NameSet($this->registry->get("REQUEST_markSelect"));
+        $model = new Model();
+        $model->MarkSet($mark);
+        $model->NameSet($this->registry->get("REQUEST_modelSelect"));
+        
+        $itemId = $this->registry->get("REQUEST_ItemId");
+
+        $returnItems = array();
+
+        foreach ($handDirections as $handDirection) {
+            $item = new HSAItem();
+            $item->ModelSet($model);
+            $item->BodySet($this->registry->get("REQUEST_bodyInput"));
+            $item->YearSet($this->registry->get("REQUEST_yearInput"));
+            $item->BrandNumberSet($this->registry->get("REQUEST_HSANumberInput"));
+            $item->HandDirectionSet($handDirection);
+            $item->LineDirectionSet($lineDirectionInput);
+            $item->TypeSet($typeInput);
+            $item->HSATypeSet($hsaTypeInput);
+            $item->IdSet($itemId);
+
+            $this->itemGateway->SaveItem($item);
+            $returnItems[] = $item;
+            $itemId = '';
+        }
+
+        $this->registry->set("content", $returnItems);
+        $this->registry->set("contentMark", $this->getMarks());
+        $this->registry->set("view", "search");
     }
 }
 
