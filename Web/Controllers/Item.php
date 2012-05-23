@@ -111,6 +111,7 @@ class Controller_Item extends Controller_Base {
         $dbResult = $this->itemGateway->FindByMarkModelBodyYear($markName,$modelName,$body,$year,$page-1,20);
         while (($item = $this->itemGateway->Fetch($dbResult)) != NULL) {
             $items[] = $item;
+            //echo "item = ".$item->IdGet()."|";
         }
         $itemsTable = ItemsTable::GetRows($items);
         

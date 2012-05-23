@@ -80,6 +80,7 @@ class HSATokikoSiteItemsLoader {
     }
 
     private function cleanLine($line) {
+        $line = iconv("cp1251", "UTF-8//IGNORE", iconv("UTF-8", "cp1251//IGNORE", $line));
         return mb_ereg_replace("'", "", $line);
     }
 

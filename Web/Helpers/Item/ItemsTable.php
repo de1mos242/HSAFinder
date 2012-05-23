@@ -57,6 +57,7 @@ class ItemsTable {
             $body.="<td><a href=\"".$_SERVER['PHP_SELF']."?route=Item/delete&itemId=$itemId\" class=\"btn btn-danger HSAButtonEdit\">Delete</a>";
             $body.="<tr/>";
         }
+        //echo "body = $body|";
         return $body;
     }
     
