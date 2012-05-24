@@ -12,6 +12,14 @@ class HSAProduct {
     private $price;
     private $amount;
     private $type;
+
+    const AMOUNTONE = "one";
+    const AMOUNTLITTLE = "little";
+    const AMOUNTNO = "no";
+    const AMOUNTMEDIUM = "medium";
+    const AMOUNTMANY = "many";
+    const AMOUNTMEGA = "mega";
+        
     
     public function HSAIdGet() {
         return $this->hsaId;
@@ -40,6 +48,10 @@ class HSAProduct {
     public function AmountGet() {
         return $this->amount;
     }
+
+    public function AmountLocaleGet() {
+        return $this->translateAmount($this->amount);
+    }
     
     public function AmountSet($value) {
         $this->amount = $value;
@@ -51,6 +63,23 @@ class HSAProduct {
     
     public function TypeSet($value) {
         $this->type = $value;
+    }
+
+    public function translateAmount($amount) {
+        if ($amount == self::AMOUNTONE)
+            return "Один";
+        elseif ($amount == self::AMOUNTLITTLE)
+            return "Мало";
+        elseif ($amount == self::AMOUNTNO)
+            return "Нет";
+        elseif ($amount == self::AMOUNTMEDIUM)
+            return "Норм";
+        elseif ($amount == self::AMOUNTMANY)
+            return "Много";
+        elseif ($amount == self::AMOUNTMEGA)
+            return "Завал";
+        else
+            return "";
     }
     
     public static function Create($hsaId, $type, $price, $amount, $description) {

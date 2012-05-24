@@ -65,10 +65,22 @@
                             </select>
                         </div>
                     </div>
-                    <div>
+                    <div class="control-group"> 
                         <label class="control-label" for="brandNumberInput">Номер</label>
                         <div class="controls">
                             <input type="text" class="input-large" id="brandNumberInput"/>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="existanceSelect">Наличие</label>
+                        <div class="controls">
+                            <select id="existanceSelect" >
+                                <?php
+                                    foreach ($registry->get("contentExistances") as $key => $value) {
+                                        echo '<option value="'.$key.'">'.$value."</option>";
+                                    }
+                                ?>
+                            </select>
                         </div>
                     </div>
                 </fieldset>

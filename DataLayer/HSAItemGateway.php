@@ -326,11 +326,13 @@ class HSAItemGateway {
     private function getModelIdsByMarkName($markName) {
         $dbResult = $this->modelGateway->FindAllModelsByMarkNameOrderName($markName);
         $result = '';
-        while ($this->db->Fetch($dbResult)) {
+        while (($row = $this->db->Fetch($dbResult)) != NULL) {
             if ($result != '')
                 $result.=",";
-            $result.=$dbResult['id'];
+            $result.=$row['id'];
+            //echo "dbResult = ".$row['id']."|";
         }
+        //echo "result = $result|";
         return $result;
     }
 
@@ -341,21 +343,22 @@ class HSAItemGateway {
             $query = ' and MODEL_ID = ' . $modelId . ' ';
         else {
             $inCondition = $this->getModelIdsByMarkName($markName);
-            if ($query != '')
+            if ($inCondition != '')
                 $query = ' and MODEL_ID in (' . $inCondition .') ';
             else
-                $query = ' and (0=0) ';
+                $query = ' and (1=1) ';
         }
+        //echo "mark query = $query|";
         return $query;
     }
 
-    public function FindByMarkModelBodyYearLineDirectionHandDirectionBrandNumber(
+    public function FindByMarkModelBodyYearLineDirectionHandDirectionBrandNumberExistance(
             $markName,$modelName,$body,$year, 
-            $lineDirection, $handDirection, $brandNumber,
+            $lineDirection, $handDirection, $brandNumber,$existance,
             $page, $pageSize) {
         
 
-        $query = "select id from ".self::TABLE_NAME;
+        $query = "select id from ".self::TABLE_NAME . ' as item ';
         
 
         $query.= ' where (0=0) '. $this->getMarkModelCondition($markName, $modelName);
@@ -369,9 +372,27 @@ class HSAItemGateway {
             $query.= " and HAND_DIRECTION = '".$handDirection."'";
         if ($this->isVarSet($brandNumber))
             $query.= " and BRAND_NUMBER LIKE '".$brandNumber."%'";
+        if ($this->isVarSet($existance))
+            $query .= $this->generateExistanceCondition($existance);
         $query.= $this->addPageLimits($page, $pageSize);
         //echo "QUERY = $query<br>";
         return $this->db->ExecuteQuery($query);
+    }
+
+    public function generateExistanceCondition($existance) {
+        $condition = ' and exists (select id from ' . 
+                HSAProductGateway::TABLE_NAME . ' as product ' .
+                ' where product.HSA_ID = item.BRAND_NUMBER and product.HSA_TYPE = item.HSA_TYPE';
+        if ($existance == 'INPRICE') {
+            $condition.=')';
+        }
+        elseif ($existance == 'ATWORKSHOP') {
+            $condition.= " and product.HSA_AMOUNT <> 'no')";
+        }
+        else {
+            return " (2=2) ";
+        }
+        return $condition;
     }
 
     private function isVarSet($var) {

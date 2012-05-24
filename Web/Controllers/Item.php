@@ -100,6 +100,7 @@ class Controller_Item extends Controller_Base {
         $this->registry->set("contentMark", $this->getMarks());
         $this->registry->set("contentLineDirections", $this->getLineDirections());
         $this->registry->set("contentHandDirections", $this->getHandDirections());
+        $this->registry->set("contentExistances", $this->getExistances());
     }
 
     function searchModels() {
@@ -115,12 +116,13 @@ class Controller_Item extends Controller_Base {
         $lineDirection = $this->registry->get("REQUEST_selectedLineDirection");
         $handDirection = $this->registry->get("REQUEST_selectedHandDirection");
         $brandNumber = $this->registry->get("REQUEST_selectedBrandNumber");
+        $existance = $this->registry->get("REQUEST_selectedExistance");
         $page = $this->registry->get('REQUEST_currentPage');
         $items = array();
         //$dbResult = $this->itemGateway->FindByMarkModelBodyYear($markName,$modelName,$body,$year,$page-1,20);
-        $dbResult = $this->itemGateway->FindByMarkModelBodyYearLineDirectionHandDirectionBrandNumber(
+        $dbResult = $this->itemGateway->FindByMarkModelBodyYearLineDirectionHandDirectionBrandNumberExistance(
                 $markName,$modelName,$body,$year,
-                $lineDirection, $handDirection, $brandNumber,
+                $lineDirection, $handDirection, $brandNumber,$existance,
                 $page-1,20
             );
         while (($item = $this->itemGateway->Fetch($dbResult)) != NULL) {
@@ -202,6 +204,10 @@ class Controller_Item extends Controller_Base {
 
     private function getHandDirections() {
         return array("empty"=>"", "LEFT"=>"Левая", "RIGHT"=>"Правая");
+    }
+
+    private function getExistances() {
+        return array("empty"=>"", "INPRICE" => "В прайсе", "ATWORKSHOP" => "На складе");
     }
 
     private function getModels($markName) {

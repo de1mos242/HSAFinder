@@ -97,7 +97,7 @@ class HSAKYBSiteItemsLoader {
             return false;
         $this->rawLine = $this->cleanLine($line);
         
-        echo $this->rawLine;
+        //echo $this->rawLine;
         $this->line = $this->parser->ParseLine($this->rawLine);
         return true;
     }

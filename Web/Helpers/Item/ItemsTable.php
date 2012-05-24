@@ -46,7 +46,7 @@ class ItemsTable {
             //$body.="<td>".HSAItemHelper::TypeToLocalString($item->TypeGet());
             if ($item->ProductGet() != NULL) {
                 $body.='<td>'.$item->ProductGet()->PriceGet();
-                $body.="<td>".$item->ProductGet()->AmountGet();
+                $body.="<td>".$item->ProductGet()->AmountLocaleGet();
                 $body.="<td>".$item->ProductGet()->DescriptionGet();
             }
             else {

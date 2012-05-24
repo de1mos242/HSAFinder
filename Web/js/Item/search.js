@@ -58,6 +58,10 @@ $(document).ready(function(){
         updateItems();
     });
 
+    $('#existanceSelect').change(function(){
+        updateItems();
+    });
+
     $(window).scroll(function(){ 
         if ($(document).height() - $(window).height() <= $(window).scrollTop() + 50) { 
             appendItems();
@@ -79,6 +83,7 @@ function appendItems() {
                 "&selectedLineDirection="+$('#lineDirecitonSelect').val() +
                 "&selectedHandDirection="+$('#handDirecitonSelect').val() +
                 "&selectedBrandNumber="+$('#brandNumberInput').val() +
+                "&selectedExistance="+$('#existanceSelect').val() +
                 "&currentPage="+nextPage,
         success: function(result){
             var resultObject = jQuery.parseJSON(result);
@@ -108,6 +113,7 @@ function updateItems() {
                 "&selectedLineDirection="+$('#lineDirecitonSelect').val() +
                 "&selectedHandDirection="+$('#handDirecitonSelect').val() +
                 "&selectedBrandNumber="+$('#brandNumberInput').val() +
+                "&selectedExistance="+$('#existanceSelect').val() +
                 "&currentPage="+currentPage,
         success: function(result){
             var resultObject = jQuery.parseJSON(result);
