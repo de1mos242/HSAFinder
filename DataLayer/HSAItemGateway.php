@@ -323,12 +323,65 @@ class HSAItemGateway {
         return $this->db->ExecuteQuery($query);
     }
 
+    private function getModelIdsByMarkName($markName) {
+        $dbResult = $this->modelGateway->FindAllModelsByMarkNameOrderName($markName);
+        $result = '';
+        while ($this->db->Fetch($dbResult)) {
+            if ($result != '')
+                $result.=",";
+            $result.=$dbResult['id'];
+        }
+        return $result;
+    }
+
+    private function getMarkModelCondition($markName, $modelName) {
+        $query = '';
+        $modelId = $this->modelGateway->FindModelByMarkAndModelNames($markName, $modelName);
+        if ($modelId != NULL) 
+            $query = ' and MODEL_ID = ' . $modelId . ' ';
+        else {
+            $inCondition = $this->getModelIdsByMarkName($markName);
+            if ($query != '')
+                $query = ' and MODEL_ID in (' . $inCondition .') ';
+            else
+                $query = ' and (0=0) ';
+        }
+        return $query;
+    }
+
+    public function FindByMarkModelBodyYearLineDirectionHandDirectionBrandNumber(
+            $markName,$modelName,$body,$year, 
+            $lineDirection, $handDirection, $brandNumber,
+            $page, $pageSize) {
+        
+
+        $query = "select id from ".self::TABLE_NAME;
+        
+
+        $query.= ' where (0=0) '. $this->getMarkModelCondition($markName, $modelName);
+        if ($this->isVarSet($body))
+            $query.= " and BODY = '".$body."'";
+        if ($this->isVarSet($year))
+            $query.= " and YEAR = '".$year."'";
+        if ($this->isVarSet($lineDirection))
+            $query.= " and LINE_DIRECTION = '".$lineDirection."'";
+        if ($this->isVarSet($handDirection))
+            $query.= " and HAND_DIRECTION = '".$handDirection."'";
+        if ($this->isVarSet($brandNumber))
+            $query.= " and BRAND_NUMBER LIKE '".$brandNumber."%'";
+        $query.= $this->addPageLimits($page, $pageSize);
+        //echo "QUERY = $query<br>";
+        return $this->db->ExecuteQuery($query);
+    }
+
     private function isVarSet($var) {
         if (is_null($var))
             return false;
         if ($var == '')
             return false;
         if ($var == 'empty')
+            return false;
+        if ($var == 'null')
             return false;
         return true;
     }

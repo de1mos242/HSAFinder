@@ -46,6 +46,18 @@ $(document).ready(function(){
         updateItems();
     });
 
+    $('#lineDirecitonSelect').change(function(){  
+        updateItems();
+    });
+
+    $('#handDirecitonSelect').change(function(){  
+        updateItems();
+    });
+
+    $('#brandNumberInput').change(function(){  
+        updateItems();
+    });
+
     $(window).scroll(function(){ 
         if ($(document).height() - $(window).height() <= $(window).scrollTop() + 50) { 
             appendItems();
@@ -64,6 +76,9 @@ function appendItems() {
                 "&selectedModel="+$('#modelSelect').val() +
                 "&selectedYear="+$('#yearSelect').val() +
                 "&selectedBody="+$('#bodySelect').val() +
+                "&selectedLineDirection="+$('#lineDirecitonSelect').val() +
+                "&selectedHandDirection="+$('#handDirecitonSelect').val() +
+                "&selectedBrandNumber="+$('#brandNumberInput').val() +
                 "&currentPage="+nextPage,
         success: function(result){
             var resultObject = jQuery.parseJSON(result);
@@ -90,6 +105,9 @@ function updateItems() {
                 "&selectedModel="+$('#modelSelect').val() +
                 "&selectedYear="+$('#yearSelect').val() +
                 "&selectedBody="+$('#bodySelect').val() +
+                "&selectedLineDirection="+$('#lineDirecitonSelect').val() +
+                "&selectedHandDirection="+$('#handDirecitonSelect').val() +
+                "&selectedBrandNumber="+$('#brandNumberInput').val() +
                 "&currentPage="+currentPage,
         success: function(result){
             var resultObject = jQuery.parseJSON(result);
