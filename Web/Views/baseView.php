@@ -5,7 +5,8 @@
         <title>HSAFinder</title>
         <meta charset="utf-8">
         <!--<script src="<?=dirname($_SERVER['PHP_SELF'])?>/bootstrap/js/bootstrap.min.js"></script>-->
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>-->
+        <script src="<?=dirname($_SERVER['PHP_SELF'])?>/js/jquery-1.7.2.min.js"></script>
         <script src="<?=dirname($_SERVER['PHP_SELF'])?>/bootstrap/js/bootstrap.min.js"></script>
         <? if (!is_null($registry->get("scriptFile"))) { ?>
             <script type="text/javascript" src="<?=dirname($_SERVER['PHP_SELF']).$registry->get('scriptFile')?>"></script>

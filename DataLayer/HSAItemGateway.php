@@ -33,6 +33,10 @@ class HSAItemGateway {
             $this->productGateway = HSAProductGateway::Create($this->db);
         return $this->productGateway;
     }
+
+    public function CleanItemsByHSAType($type) {
+        $this->db->ExecuteNonQuery("delete from " . self::TABLE_NAME . " where HSA_TYPE = '$type'");
+    }
     
     public function CreateTable() {
         $this->modelGateway->CreateTable();

@@ -34,7 +34,7 @@ class Controller_Product extends Controller_Base {
     }
     
     function upload() {
-        $this->registry->set("upload_error", $_FILES['userfile']['name'].' '.$_FILES['userfile']['tmp_name']);
+        //$this->registry->set("upload_error", $_FILES['userfile']['name'].' '.$_FILES['userfile']['tmp_name']);
         if(is_uploaded_file($_FILES["filename"]["tmp_name"]))
         {
             $path = dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "upload" . DIRECTORY_SEPARATOR;

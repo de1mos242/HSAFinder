@@ -24,7 +24,7 @@ class HSAProductsLoader {
             throw new Exception ("Не удалось открыть файл: $filename");
         }
         $this->prepareParse();
-        while (($line = fgets($file, 512)) !== false) {
+        while (($line = fgets($file, 2048)) !== false) {
             $this->readLine($line);
         }
         fclose($file);
@@ -82,7 +82,7 @@ class HSAProductsLoader {
         }
         
         $description = mb_eregi_replace("'", " ", $row[2]);
-        $hsaIds = $this->getHSAId($row[2]);
+        $hsaIds = $this->getHSAId($description);
         foreach ($hsaIds as $value) {
             //echo "value = $value\n";
             $product = HSAProduct::Create($value, $type, $row[3], $amount, $description);
@@ -91,15 +91,47 @@ class HSAProductsLoader {
     }
 
     function getHSAId($description) {
-        if (mb_eregi("[\w\d/]{3,}[\d]$|[^\w\d]\([\w\d/]{4,}\)", $description, $regs)) {
+        /*if (mb_eregi("[\w\d/]{3,}[\d]$|[^\w\d]\([\w\d/]{4,}\)", $description, $regs)) {*/
+        /*if (mb_eregi("[^\d][\d]{6,6}[^d]", $description)) {
             //echo "find! results. first: $regs[0]\n";
-            $clean1 = mb_eregi_replace("\(|\)| ","", $regs[0]);
+            $clean1 = mb_ereg_replace("[^\d]", "", string);
+            //$clean1 = mb_eregi_replace("\(|\)| ","", $regs[0]);
             //$clean2 = mb_ereg_replace(" ", "", $clean1);
             return mb_split("/", $clean1);
+        }*/
+        $result = array();
+        if (mb_eregi("KYB", $description)) {
+            if (preg_match_all("/[^\d][\d]{6,6}([^\d]|$)/", $description, $results) ) {
+                foreach ($results[0] as $value) {
+                    $result[] = mb_ereg_replace("[^\d]", "", $value);
+                }
+            }
         }
-
-        return array();
+        elseif (mb_eregi("TOKICO", $description)) {
+            $description = $this->translitIt($description);
+            if (mb_eregi("[^a-z][a-z]{1,2}[ ]?[\d]{4,5}([^\d]|$)", $description, $results)) {
+                foreach ($results as $value) {
+                    $clean = mb_eregi_replace("[^\da-z]", "", $value);
+                    if ($clean == '')
+                        continue;
+                    $result[] = $clean;
+                }
+            }
+        }
+        return $result;
     }
+
+    function translitIt($str) 
+    {
+        $tr = array(
+            "А"=>"A","В"=>"B","Е"=>"E",
+            "К"=>"K","М"=>"M","Н"=>"H",
+            "О"=>"O","Р"=>"P","С"=>"C","Т"=>"T",
+            "У"=>"Y","Х"=>"X"
+        );
+        return strtr($str,$tr);
+    }
+
 }
 
 ?>

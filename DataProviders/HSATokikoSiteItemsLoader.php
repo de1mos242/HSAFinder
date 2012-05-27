@@ -194,7 +194,7 @@ class HSATokikoSiteItemsLoader {
 	        			$item = HSAItem::Create($model, 
 			                $this->year, $this->body, 
 			                $brandNumber, $data['oems'],
-			                $handDirection, $lineDirection, $type, "TOKIKO");
+			                $handDirection, $lineDirection, $type, "TOKICO");
 			            $this->gateway->SaveItem($item);
 	        		}
 	        	}

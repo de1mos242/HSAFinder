@@ -66,6 +66,7 @@ class Controller_Item extends Controller_Base {
 
     function loadKYB() {
         set_time_limit(3*60*60);//3 hours to parse
+        $this->itemGateway->CleanItemsByHSAType('KYB');
         $filename = dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .'FirstUpload'. DIRECTORY_SEPARATOR .'KYBSIte.csv';
         HSAKYBSiteItemsLoader::UploadFile($filename);
         $this->index();   
@@ -73,6 +74,7 @@ class Controller_Item extends Controller_Base {
 
     function loadTokiko() {
         set_time_limit(3*60*60);//3 hours to parse
+        $this->itemGateway->CleanItemsByHSAType('TOKICO');
         $filename = dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .'FirstUpload'. DIRECTORY_SEPARATOR .'tokikoSite.csv';
         HSATokikoSiteItemsLoader::UploadFile($filename);
         $this->index();   
