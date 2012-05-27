@@ -31,11 +31,11 @@ class HSAProductsLoaderTest extends PHPUnit_Framework_TestCase {
     /** 
     * @dataProvider SimpleStreamContent 
     */
-    public function testLoadSimpleStream($hsaId, $type, $description, $price, $amount) {
+    public function testLoadSimpleStream($hsaId, $type, $description, $price, $amount, $haveToBe = 1) {
         $this->fixture->ParseFile(dirname(__FILE__)."/testLoadSimpleStream.csv");
         
         $product = $this->gateway->GetProductByHSAIdAndType($hsaId,$type);
-        if ($hsaId != "0") {
+        if ($hsaId != "0" && $haveToBe) {
             $this->AssertNotNull($product);
             $this->AssertEquals($hsaId, $product->HSAIdGet());
             $this->AssertEquals($type, $product->TypeGet());
@@ -67,6 +67,14 @@ class HSAProductsLoaderTest extends PHPUnit_Framework_TestCase {
             array("A1070", "TOKICO", "TOKICO  А 1070  стойка DAIHATSU CHARADE (333170)",1320,"one"),
             //43377,"АМОРТИЗАТОРЫ   ""  TOKICO """,TOKICO    TO LC90 rear (344288)E 3741,780,Один
             array("E3741", "TOKICO", "TOKICO    TO LC90 rear (344288)E 3741",780,"one"),
+            //14688,"АМОРТИЗАТОРЫ   ""  TOKICO """,TOKICO 3068/3178/3267/3530/3365 (KYB343153/214/ 344015/100/ 443149/444040/553084/143/554075/118...,520,Мало
+            array("554075", "TOKICO", "TOKICO 3068/3178/3267/3530/3365 (KYB343153/214/ 344015/100/ 443149/444040/553084/143/554075/118...",520,"little", 0),
+            array("54075", "TOKICO", "TOKICO 3068/3178/3267/3530/3365 (KYB343153/214/ 344015/100/ 443149/444040/553084/143/554075/118...",520,"little", 0),
+            array("3068", "TOKICO", "TOKICO 3068/3178/3267/3530/3365 (KYB343153/214/ 344015/100/ 443149/444040/553084/143/554075/118...",520,"little"),
+            array("3178", "TOKICO", "TOKICO 3068/3178/3267/3530/3365 (KYB343153/214/ 344015/100/ 443149/444040/553084/143/554075/118...",520,"little"),
+            array("3267", "TOKICO", "TOKICO 3068/3178/3267/3530/3365 (KYB343153/214/ 344015/100/ 443149/444040/553084/143/554075/118...",520,"little"),
+            array("3530", "TOKICO", "TOKICO 3068/3178/3267/3530/3365 (KYB343153/214/ 344015/100/ 443149/444040/553084/143/554075/118...",520,"little"),
+            array("3365", "TOKICO", "TOKICO 3068/3178/3267/3530/3365 (KYB343153/214/ 344015/100/ 443149/444040/553084/143/554075/118...",520,"little"),
             //51202,"АМОРТИЗАТОРЫ   ""  TOKICO """,TOKICO  E 20012,1503,Мало
             array("E20012", "TOKICO", "TOKICO  E 20012",1503,"little")
         ); 

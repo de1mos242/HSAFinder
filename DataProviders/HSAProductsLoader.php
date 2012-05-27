@@ -82,7 +82,7 @@ class HSAProductsLoader {
         }
         
         $description = mb_eregi_replace("'", " ", $row[2]);
-        $hsaIds = $this->getHSAId($description);
+        $hsaIds = $this->getHSAId($description, $type);
         foreach ($hsaIds as $value) {
             //echo "value = $value\n";
             $product = HSAProduct::Create($value, $type, $row[3], $amount, $description);
@@ -90,7 +90,7 @@ class HSAProductsLoader {
         }
     }
 
-    function getHSAId($description) {
+    function getHSAId($description, $type) {
         /*if (mb_eregi("[\w\d/]{3,}[\d]$|[^\w\d]\([\w\d/]{4,}\)", $description, $regs)) {*/
         /*if (mb_eregi("[^\d][\d]{6,6}[^d]", $description)) {
             //echo "find! results. first: $regs[0]\n";
@@ -100,22 +100,27 @@ class HSAProductsLoader {
             return mb_split("/", $clean1);
         }*/
         $result = array();
-        if (mb_eregi("KYB", $description)) {
-            if (preg_match_all("/[^\d][\d]{6,6}([^\d]|$)/", $description, $results) ) {
+        if ($type == 'KYB') {
+            if (preg_match_all("/[^\d][\d]{6,6}([^-\d]|$)/", $description, $results) ) {
                 foreach ($results[0] as $value) {
                     $result[] = mb_ereg_replace("[^\d]", "", $value);
                 }
             }
         }
-        elseif (mb_eregi("TOKICO", $description)) {
+        elseif ($type == 'TOKICO') {
             $description = $this->translitIt($description);
-            if (mb_eregi("[^a-z][a-z]{1,2}[ ]?[\d]{4,5}([^\d]|$)", $description, $results)) {
-                foreach ($results as $value) {
-                    $clean = mb_eregi_replace("[^\da-z]", "", $value);
-                    if ($clean == '')
-                        continue;
-                    $result[] = $clean;
-                }
+            $description = mb_ereg_replace("/", "/ ", $description);
+            //if (preg_match_all("/([^a-z]{1}(A|B|E|EL|G|Q|S|SD|U|X|Z|\/){1}){1}[ ]{0,1}[\d]{4,5}([^\d]|$|\/){1}/", $description, $results)) {
+            if (preg_match_all("/(((A|B|E|EL|G|Q|S|SD|U|X|Z){1}[ ]{0,1})|[^\d])[\d]{4,5}([^\d]|$){1}/", $description, $results)) {
+            //if (mb_eregi("([^a-z\d][a-z ]{0,3}|^)[\d]{4,5}([^\d]|$)", $description, $results)) {
+            //    foreach ($results as $subvalue) {
+                    foreach ($results[0] as $value) {
+                        $clean = mb_eregi_replace("[^\da-z]", "", $value);
+                        if ($clean == '')
+                            continue;
+                        $result[] = $clean;
+                    }
+            //    }
             }
         }
         return $result;
