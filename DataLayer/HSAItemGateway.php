@@ -82,7 +82,15 @@ class HSAItemGateway {
     
     public function SaveItem($item) {
     	if ($item->IdGet() == NULL) {
-            $this->insertNewItem($item);
+            $testId = $this->FindItem($item);
+            if ($testId == NULL) {
+                $this->insertNewItem($item);
+            }
+            else {
+                $existsItem = $this->GetItemById($testId);
+                $existsItem->OEMNumbersAppend($item->OEMNumbersGet());
+                $item = $existsItem;
+            }
         } else {
             $this->updateItem($item);
         }

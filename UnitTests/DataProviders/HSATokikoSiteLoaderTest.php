@@ -38,7 +38,7 @@ class HSATokikoSiteLoaderTest extends PHPUnit_Framework_TestCase {
         $model = Model::Create($mark, $modelName);
         $item = HSAItem::Create($model, $year, $body, 
                     $brandNumber, array(),
-                    $handDirection, $lineDirection, $type, "TOKIKO");
+                    $handDirection, $lineDirection, $type, "TOKICO");
         
         $this->fixture->ParseFile(dirname(__FILE__)."/TokikoSiteSmall.csv");
         
@@ -59,7 +59,7 @@ class HSATokikoSiteLoaderTest extends PHPUnit_Framework_TestCase {
         $itemOems = $findedItem->OEMNumbersGet();
         foreach ($oems as $value) {
             $res = array_search($value, $itemOems);
-            $this->AssertTrue($res !== FALSE, "oem not found");
+            $this->AssertTrue($res !== FALSE, "oem not found $value");
             
         }
     }
@@ -85,6 +85,10 @@ class HSATokikoSiteLoaderTest extends PHPUnit_Framework_TestCase {
             array('TOYOTA','KIJANG INNOVA','','04~','U3773','GAS','FRONT','RIGHT',array('48510-0K080')),
             array('TOYOTA','KIJANG INNOVA','','04~','E3796','GAS','REAR','RIGHT',array('48531-0K210')),
             array('TOYOTA','KIJANG INNOVA','','04~','E3796','GAS','REAR','LEFT',array('48531-0K210')),
+
+            //DAIHATSU,APPLAUSE,A101,89/06~97/09,"R A1070","R B1070","48510-87106 48510-87114 48510-87118 48510-87111 48510-87117",,,
+            //DAIHATSU,APPLAUSE,A101,89/06~97/09,"R A1070","R B1070","48510-87104 48510-87108     48510-87105 48510-87109",,,
+            array("DAIHATSU","APPLAUSE","A101","89/06~97/09",'A1070',"OIL","FRONT","RIGHT", array('48510-87106', '48510-87114', '48510-87118', '48510-87111', '48510-87117', '48510-87104', '48510-87108', '48510-87105', '48510-87109')),
         ); 
         
     }

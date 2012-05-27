@@ -67,6 +67,9 @@ class HSAItem {
     public function OEMNumbersSet($value) {
     	$this->oemNumbers = $value;
     }
+    public function OEMNumbersAppend($value) {
+        $this->oemNumbers = array_unique(array_merge($this->oemNumbers, $value));
+    }
     
     public function HandDirectionGet() {
     	return $this->handDirection;
