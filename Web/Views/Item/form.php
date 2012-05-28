@@ -1,6 +1,6 @@
 <? 	
 	$item = $registry->get("content");
-	$HSATypes = array("KYB","TOKIKO");
+	$HSATypes = array("KYB","TOKICO");
 	$lineDirections = array('FRONT'=>"Передняя", 'REAR'=>"Задняя");
 	$handDirections = array('BOTH'=>"Обе", 'LEFT'=>"Левая", 'RIGHT'=>"Правая");
 	$types = array("empty" => '', 'GAS' => 'Газовая', 'OIL' => 'Масляная');

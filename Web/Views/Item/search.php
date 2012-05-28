@@ -1,6 +1,6 @@
 <table>
     <td>
-        <div class="span8">
+        <div class="span5">
             <form class="form-horizontal" onSubmit="updateItems(); return false;">
                 <fieldset>
                     <div class="control-group">
@@ -28,19 +28,19 @@
                             <select id="yearSelect" disabled="true"></select>
                         </div>
                     </div>
+                </fieldset>
+            </form>
+        </div>
+    <td>
+        <div class="span5">
+            <form class="form-horizontal" onSubmit="updateItems(); return false;">
+                <fieldset>
                     <div class="control-group">
                         <label class="control-label" for="bodySelect">Выберите кузов</label>
                         <div class="controls">
                             <select id="bodySelect" disabled="true"></select>
                         </div>
                     </div>
-                </fieldset>
-            </form>
-        </div>
-    <td>
-        <div class="span8">
-            <form class="form-horizontal" onSubmit="updateItems(); return false;">
-                <fieldset>
                     <div class="control-group">
                         <label class="control-label" for="lineDirecitonSelect">Передняя/Задняя</label>
                         <div class="controls">
@@ -65,6 +65,13 @@
                             </select>
                         </div>
                     </div>
+                </fieldset>
+            </form>
+        </div>
+    <td>
+        <div class="span5">
+            <form class="form-horizontal" onSubmit="updateItems(); return false;">
+                <fieldset>
                     <div class="control-group"> 
                         <label class="control-label" for="brandNumberInput">Номер</label>
                         <div class="controls">
@@ -83,6 +90,19 @@
                             </select>
                         </div>
                     </div>
+                    <div class="control-group">
+                        <label class="control-label" for="hsaTypeSelect">Выберите тип</label>
+                        <div class="controls">
+                            <select id="hsaTypeSelect" >
+                                <?php
+                                    foreach ($registry->get("contentHSATypes") as $key => $mark) {
+                                        echo '<option value="'.$key.'">'.$mark."</option>";
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    
                 </fieldset>
             </form>
         </div>

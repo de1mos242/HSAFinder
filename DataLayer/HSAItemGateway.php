@@ -364,28 +364,37 @@ class HSAItemGateway {
         return $query;
     }
 
-    public function FindByMarkModelBodyYearLineDirectionHandDirectionBrandNumberExistance(
-            $markName,$modelName,$body,$year, 
-            $lineDirection, $handDirection, $brandNumber,$existance,
-            $page, $pageSize) {
-        
+    public function FindByFields($fields) {
+        $markName = '';
+        $modelName = '';
+        $page = 0;
+        $pageSize = 20;
+        if (isset($fields['markName']))
+            $markName = mysql_real_escape_string($fields['markName']);
+        if (isset($fields['modelName']))
+            $modelName = mysql_real_escape_string($fields['modelName']);
+        if (isset($fields['page']))
+            $page = mysql_real_escape_string($fields['page']);
+        if (isset($fields['pageSize']))
+            $pageSize = mysql_real_escape_string($fields['pageSize']);
 
         $query = "select id from ".self::TABLE_NAME . ' as item ';
         
-
         $query.= ' where (0=0) '. $this->getMarkModelCondition($markName, $modelName);
-        if ($this->isVarSet($body))
-            $query.= " and BODY = '".$body."'";
-        if ($this->isVarSet($year))
-            $query.= " and YEAR = '".$year."'";
-        if ($this->isVarSet($lineDirection))
-            $query.= " and LINE_DIRECTION = '".$lineDirection."'";
-        if ($this->isVarSet($handDirection))
-            $query.= " and HAND_DIRECTION = '".$handDirection."'";
-        if ($this->isVarSet($brandNumber))
-            $query.= " and BRAND_NUMBER LIKE '".$brandNumber."%'";
-        if ($this->isVarSet($existance))
-            $query .= $this->generateExistanceCondition($existance);
+        if (isset($fields['body']) && $this->isVarSet($fields['body']))
+            $query .= " and BODY = '".mysql_real_escape_string($fields['body'])."'";
+        if (isset($fields['year']) && $this->isVarSet($fields['year']))
+            $query.= " and YEAR = '".mysql_real_escape_string($fields['year'])."'";
+        if (isset($fields['lineDirection']) && $this->isVarSet($fields['lineDirection']))
+            $query.= " and LINE_DIRECTION = '".mysql_real_escape_string($fields['lineDirection'])."'";
+        if (isset($fields['handDirection']) && $this->isVarSet($fields['handDirection']))
+            $query.= " and HAND_DIRECTION = '".mysql_real_escape_string($fields['handDirection'])."'";
+        if (isset($fields['brandNumber']) && $this->isVarSet($fields['brandNumber']))
+            $query.= " and BRAND_NUMBER LIKE '".mysql_real_escape_string($fields['brandNumber'])."%'";
+        if (isset($fields['hsa_type']) && $this->isVarSet($fields['hsa_type']))
+            $query.= " and HSA_TYPE = '".mysql_real_escape_string($fields['hsa_type'])."'";
+        if (isset($fields['existance']) && $this->isVarSet($fields['existance']))
+            $query .= $this->generateExistanceCondition($fields['existance']);
         $query.= $this->addPageLimits($page, $pageSize);
         //echo "QUERY = $query<br>";
         return $this->db->ExecuteQuery($query);

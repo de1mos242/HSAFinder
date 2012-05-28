@@ -62,6 +62,10 @@ $(document).ready(function(){
         updateItems();
     });
 
+    $('#hsaTypeSelect').change(function() {
+        updateItems();
+    })
+
     $(window).scroll(function(){ 
         if ($(document).height() - $(window).height() <= $(window).scrollTop() + 50) { 
             appendItems();
@@ -84,6 +88,7 @@ function appendItems() {
                 "&selectedHandDirection="+$('#handDirecitonSelect').val() +
                 "&selectedBrandNumber="+$('#brandNumberInput').val() +
                 "&selectedExistance="+$('#existanceSelect').val() +
+                "&selectedHSAType="+$('#hsaTypeSelect').val() +
                 "&currentPage="+nextPage,
         success: function(result){
             var resultObject = jQuery.parseJSON(result);
@@ -114,6 +119,7 @@ function updateItems() {
                 "&selectedHandDirection="+$('#handDirecitonSelect').val() +
                 "&selectedBrandNumber="+$('#brandNumberInput').val() +
                 "&selectedExistance="+$('#existanceSelect').val() +
+                "&selectedHSAType="+$('#hsaTypeSelect').val() +
                 "&currentPage="+currentPage,
         success: function(result){
             var resultObject = jQuery.parseJSON(result);

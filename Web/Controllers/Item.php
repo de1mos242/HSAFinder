@@ -48,14 +48,6 @@ class Controller_Item extends Controller_Base {
     }
     
     function upload() {
-        /*if(is_uploaded_file($_FILES["filename"]["tmp_name"]))
-        {
-            $this->itemGateway->CreateTable();
-            $loader = HSAKYBSiteItemsLoader::Create($this->itemGateway);
-            $loader->ParseFile($_FILES["filename"]["tmp_name"]);
-        } else {
-            $this->registry->set("upload_error", "Ошибка загрузки файла");
-        }*/
         $this->index();
     }
 
@@ -103,6 +95,7 @@ class Controller_Item extends Controller_Base {
         $this->registry->set("contentLineDirections", $this->getLineDirections());
         $this->registry->set("contentHandDirections", $this->getHandDirections());
         $this->registry->set("contentExistances", $this->getExistances());
+        $this->registry->set('contentHSATypes', $this->getHSATypes());
     }
 
     function searchModels() {
@@ -111,22 +104,20 @@ class Controller_Item extends Controller_Base {
     }
     
     function searchByFields() {
-        $markName = $this->registry->get('REQUEST_selectedMark');
-        $modelName = $this->registry->get('REQUEST_selectedModel');
-        $body = $this->registry->get('REQUEST_selectedBody');
-        $year = $this->registry->get('REQUEST_selectedYear');
-        $lineDirection = $this->registry->get("REQUEST_selectedLineDirection");
-        $handDirection = $this->registry->get("REQUEST_selectedHandDirection");
-        $brandNumber = $this->registry->get("REQUEST_selectedBrandNumber");
-        $existance = $this->registry->get("REQUEST_selectedExistance");
-        $page = $this->registry->get('REQUEST_currentPage');
+        $params = array();
+        $params['markName'] = $this->registry->get('REQUEST_selectedMark');
+        $params['modelName'] = $this->registry->get('REQUEST_selectedModel');
+        $params['body'] = $this->registry->get('REQUEST_selectedBody');
+        $params['year'] = $this->registry->get('REQUEST_selectedYear');
+        $params['lineDirection'] = $this->registry->get("REQUEST_selectedLineDirection");
+        $params['handDirection'] = $this->registry->get("REQUEST_selectedHandDirection");
+        $params['brandNumber'] = $this->registry->get("REQUEST_selectedBrandNumber");
+        $params['existance'] = $this->registry->get("REQUEST_selectedExistance");
+        $params['hsa_type'] = $this->registry->get("REQUEST_selectedHSAType");
+        $params['page'] = $this->registry->get('REQUEST_currentPage') -1;
         $items = array();
         //$dbResult = $this->itemGateway->FindByMarkModelBodyYear($markName,$modelName,$body,$year,$page-1,20);
-        $dbResult = $this->itemGateway->FindByMarkModelBodyYearLineDirectionHandDirectionBrandNumberExistance(
-                $markName,$modelName,$body,$year,
-                $lineDirection, $handDirection, $brandNumber,$existance,
-                $page-1,20
-            );
+        $dbResult = $this->itemGateway->FindByFields($params);
         while (($item = $this->itemGateway->Fetch($dbResult)) != NULL) {
             $items[] = $item;
         }
@@ -201,15 +192,19 @@ class Controller_Item extends Controller_Base {
     }
 
     private function getLineDirections() {
-        return array("empty"=>"", "FRONT"=>"Передняя", "REAR"=>"Задняя");
+        return array("empty"=>"Все", "FRONT"=>"Передняя", "REAR"=>"Задняя");
     }
 
     private function getHandDirections() {
-        return array("empty"=>"", "LEFT"=>"Левая", "RIGHT"=>"Правая");
+        return array("empty"=>"Все", "LEFT"=>"Левая", "RIGHT"=>"Правая");
     }
 
     private function getExistances() {
-        return array("empty"=>"", "INPRICE" => "В прайсе", "ATWORKSHOP" => "На складе");
+        return array("empty"=>"Все", "INPRICE" => "В прайсе", "ATWORKSHOP" => "На складе");
+    }
+
+    private function getHSATypes() {
+        return array("empty"=>"Все", 'KYB'=>"KYB", 'TOKICO'=>'TOKICO');
     }
 
     private function getModels($markName) {
@@ -227,7 +222,7 @@ class Controller_Item extends Controller_Base {
 
     public function save() {
         $hsaTypeInput = $this->registry->get("REQUEST_HSATypeSelect");
-        if (!mb_eregi("KYB|TOKIKO", $hsaTypeInput)) {
+        if (!mb_eregi("KYB|TOKICO", $hsaTypeInput)) {
             throw new Exception("Error Processing Request");
         }
         $typeInput = $this->registry->get("REQUEST_TypeSelect");
