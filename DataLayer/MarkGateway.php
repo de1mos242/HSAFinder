@@ -48,7 +48,7 @@ class MarkGateway {
                 "(NAME)" .
                 " vALUES " .
                 "(" .
-                "'" . $mark->NameGet() . "'" .
+                "'" . mysql_escape_string($mark->NameGet()) . "'" .
                 ")";
         $this->db->ExecuteNonQuery($query);
     }
@@ -60,7 +60,7 @@ class MarkGateway {
         $updateFields = "";
 
         if ($markRow["NAME"] != $mark->NameGet())
-            $updateFields.= " NAME = '" . $mark->NameGet() . "'";
+            $updateFields.= " NAME = '" . mysql_escape_string($mark->NameGet()) . "'";
 
         if ($updateFields == "") return;
         $this->db->ExecuteNonQuery($query . $updateFields . $whereCondition);
@@ -83,7 +83,7 @@ class MarkGateway {
     
     public function FindMarkByName($name) {
         $query = "select id from " . self::TABLE_NAME . " where " .
-                " NAME = '" . $name . "' ";
+                " NAME = '" . mysql_escape_string($name) . "' ";
         $dbResult = $this->db->ExecuteQuery($query);
         $row = $this->db->Fetch($dbResult);
         if (!$row)

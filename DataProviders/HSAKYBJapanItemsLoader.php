@@ -35,6 +35,21 @@ class HSAKYBJapanItemsLoader {
     private $brandNumbersGas = array();
     private $brandNumbersOil = array();
     private $oemNumbers = array();
+
+    private $curLineNumber = 0;
+
+    public static function UploadFile($filename) {
+        $start = date("r");
+        $db = DBMySql::Create();
+        $db->CreateDatabase();
+        //$this->db->StartTransaction();
+        $gateway = HSAItemGateway::Create($db);
+        //$gateway->CreateTable();
+        $fixture = HSAKYBJapanItemsLoader::Create($gateway);
+        $fixture->ParseFile($filename);
+        $end = date("r");
+        //echo "started at $start\nended at $end\n";
+    }
     
     public static function Create($itemsGateway) {
         $loader = new HSAKYBJapanItemsLoader();
@@ -47,7 +62,7 @@ class HSAKYBJapanItemsLoader {
         if (!$this->file) {
             throw new Exception ("Не удалось открыть файл: $filename");
         }
-        $this->skipLines = 3;
+        $this->skipLines = 0;
         $this->prepareParse();
         while ($this->ReadLine()){
             $this->processLine();
@@ -57,11 +72,11 @@ class HSAKYBJapanItemsLoader {
     
     private function ReadLine() {
         while ($this->skipLines > 0) {
-            if (fgets($this->file, 512) == false )
+            if (fgets($this->file) == false )
                 return false;
             $this->skipLines--;
         }
-        $line = fgets($this->file, 512);
+        $line = fgets($this->file);
         if ($line == false) 
             return false;
         $this->rawLine = $line;
@@ -75,14 +90,16 @@ class HSAKYBJapanItemsLoader {
     }
     
     private function processLine() {
-        if ($this->line[0]!='')
+        if (!empty($this->line[0]))
             $this->mark = $this->line[0];
-        if ($this->line[1]!='')
+        if (!empty($this->line[1])) 
             $this->model = $this->line[1];
-        if ($this->line[2]!='')
+        if (!empty($this->line[2])) {
             $this->year = $this->line[2];
-        if ($this->line[3]!='')
+        }
+        if (!empty($this->line[3])) {
             $this->body = $this->line[3];
+        }
         
         $this->processFront();
         $this->generateItems(self::FRONT);

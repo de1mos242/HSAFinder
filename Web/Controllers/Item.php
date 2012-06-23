@@ -12,6 +12,7 @@ require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .'DataLay
 require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .'DataLayer'. DIRECTORY_SEPARATOR .'ModelGateway.php';
 require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .'DataProviders'. DIRECTORY_SEPARATOR .'HSAItemsTestGenerator.php';
 require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .'DataProviders'. DIRECTORY_SEPARATOR .'HSAKYBSiteItemsLoader.php';
+require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .'DataProviders'. DIRECTORY_SEPARATOR .'HSAKYBJapanItemsLoader.php';
 require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .'DataProviders'. DIRECTORY_SEPARATOR .'HSATokikoSiteItemsLoader.php';
 require_once dirname(dirname(__FILE__)). DIRECTORY_SEPARATOR . "Helpers" . DIRECTORY_SEPARATOR . "Item" . DIRECTORY_SEPARATOR . "ItemsTable.php";
 
@@ -56,10 +57,16 @@ class Controller_Item extends Controller_Base {
         $this->index();   
     }
 
-    function loadKYB() {
+    function loadKYBJapan() {
         set_time_limit(3*60*60);//3 hours to parse
-        $this->itemGateway->CleanItemsByHSAType('KYB');
-        $filename = dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .'FirstUpload'. DIRECTORY_SEPARATOR .'KYBSIte.csv';
+        $filename = dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .'FirstUpload'. DIRECTORY_SEPARATOR .'KYBJapan.csv';
+        HSAKYBJapanItemsLoader::UploadFile($filename);
+        $this->index();   
+    }
+
+    function loadKYBEurope() {
+        set_time_limit(3*60*60);//3 hours to parse
+        $filename = dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR .'FirstUpload'. DIRECTORY_SEPARATOR .'KYBEurope.csv';
         HSAKYBSiteItemsLoader::UploadFile($filename);
         $this->index();   
     }

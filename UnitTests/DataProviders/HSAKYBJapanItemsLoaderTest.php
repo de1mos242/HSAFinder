@@ -33,7 +33,7 @@ class HSAKYBJapanItemsLoaderTest extends PHPUnit_Framework_TestCase {
     * @dataProvider SimpleStreamContent 
     */
     public function testLoadSimpleStream($markName, $modelName) {
-        $this->fixture->ParseFile(dirname(__FILE__)."/testLoadKYBJapanOnePage.csv");
+        $this->fixture->ParseFile(dirname(__FILE__)."/newCleaned4.csv");
         
         $dbResult = $this->gateway->FindItemsByMarkAndModelNames($markName,$modelName, 0, 1000);
         $this->AssertNotNull($this->gateway->Fetch($dbResult));
@@ -42,10 +42,10 @@ class HSAKYBJapanItemsLoaderTest extends PHPUnit_Framework_TestCase {
     public function SimpleStreamContent()
     {
         return array(
-            array('ASIA','ROKSTA'), 
-            array('DAEWOO','TICO'), 
-            array('DAEWOO','MATIZ/MATIS'), 
-            array('DAEWOO','MATIZ/Chevrolet MATIZ/Chevrolet SPARK/Pontiaic MATIZ G1'), 
+           // array('ASIA','ROKSTA'), 
+            //array('DAEWOO','TICO'), 
+            //array('DAEWOO','MATIZ/MATIS'), 
+            //array('DAEWOO','MATIZ/Chevrolet MATIZ/Chevrolet SPARK/Pontiaic MATIZ G1'), 
             array('DAEWOO','ROYAL RECORD')
         ); 
     }

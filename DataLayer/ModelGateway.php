@@ -57,7 +57,7 @@ class ModelGateway {
                 "(NAME, MARK_ID)" .
                 " vALUES " .
                 "(" .
-                "'" . $model->NameGet() . "', " .
+                "'" . mysql_escape_string($model->NameGet()) . "', " .
                 "'" . $this->markGateway->FindMarkByName($model->MarkGet()->NameGet()) . "'" .
                 ")";
         $this->db->ExecuteNonQuery($query);
@@ -70,7 +70,7 @@ class ModelGateway {
         $updateFields = "";
 
         if ($markRow["NAME"] != $mark->NameGet())
-            $updateFields.= " NAME = '" . $mark->NameGet() . "'";
+            $updateFields.= " NAME = '" . mysql_escape_string($mark->NameGet()) . "'";
             
         $mark_id = $this->MarkGateway->FindMarkByName($model->MarkGet()->NameGet());
         if ($productRow["MARK_ID"] != $mark_id) {
@@ -103,7 +103,7 @@ class ModelGateway {
     	if ($mark==NULL)
     		return NULL;
         $query = "select id from " . self::TABLE_NAME . " where " .
-                " NAME = '" . $modelName . "' ".
+                " NAME = '" . mysql_escape_string($modelName) . "' ".
                 " and MARK_ID = " . $this->markGateway->FindMarkByName($markName);
         $dbResult = $this->db->ExecuteQuery($query);
         $row = $this->db->Fetch($dbResult);
@@ -143,7 +143,7 @@ class ModelGateway {
     public function FindAllModelsByMarkNameOrderName($markName) {
         $query = "select model.id from ".self::TABLE_NAME. ' as model ' .
                 ' inner join '.MarkGateway::TABLE_NAME. ' as mark on model.MARK_ID = mark.id '.
-                " where mark.NAME = '".$markName."' order by model.NAME";
+                " where mark.NAME = '".mysql_escape_string($markName)."' order by model.NAME";
         return $this->db->ExecuteQuery($query);
     }
 }

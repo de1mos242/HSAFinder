@@ -33,7 +33,8 @@
                           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Работа с каталогом<b class="caret"></b></a>
                           <ul class="dropdown-menu">
                             <li><a href="<?=$_SERVER['PHP_SELF']?>?route=Item/clean">Очистить данные каталога</a>
-                            <li><a href="<?=$_SERVER['PHP_SELF']?>?route=Item/loadKYB">Загрузить каталог KYB</a>
+                            <li><a href="<?=$_SERVER['PHP_SELF']?>?route=Item/loadKYBEurope">Загрузить каталог KYBEurope</a>
+                            <li><a href="<?=$_SERVER['PHP_SELF']?>?route=Item/loadKYBJapan">Загрузить каталог KYBJapan</a>
                             <li><a href="<?=$_SERVER['PHP_SELF']?>?route=Item/loadTokiko">Загрузить каталог Tokiko</a>
                             <li><a href="<?=$_SERVER['PHP_SELF']?>?route=Item/create">Добавить элемент в каталог</a>
                             <!--<li><a data-toggle="modal" href="#upload_catalog">Загрузить каталог</a></li>

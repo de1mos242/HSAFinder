@@ -119,16 +119,16 @@ class HSAItemGateway {
 	}
         $query = "INSERT INTO " . self::TABLE_NAME .
             "(YEAR, BODY, BRAND_NUMBER, HAND_DIRECTION, LINE_DIRECTION, TYPE, MODEL_ID, HSA_TYPE)" .
-            " vALUES " .
+            " VALUES " .
             "(" .
-            "'" . $item->YearGet() . "', " .
-            "'" . $item->BodyGet() . "', " .
-            "'" . $item->BrandNumberGet() . "', " .
-            "'" . $item->HandDirectionGet() . "', " .
-            "'" . $item->LineDirectionGet() . "', " .
-            "'" . $item->TypeGet() . "', " .
+            "'" . mysql_escape_string($item->YearGet()) . "', " .
+            "'" . mysql_escape_string($item->BodyGet()) . "', " .
+            "'" . mysql_escape_string($item->BrandNumberGet()) . "', " .
+            "'" . mysql_escape_string($item->HandDirectionGet()) . "', " .
+            "'" . mysql_escape_string($item->LineDirectionGet()) . "', " .
+            "'" . mysql_escape_string($item->TypeGet()) . "', " .
             "'" . $modelId . "'," .
-            "'" . $item->HSATypeGet() . "' " .
+            "'" . mysql_escape_string($item->HSATypeGet()) . "' " .
             ")";
         $this->db->ExecuteNonQuery($query);
     }
@@ -140,37 +140,37 @@ class HSAItemGateway {
         $updateFields = "";
 		
         if ($itemRow["YEAR"] != $item->YearGet())
-            $updateFields.= " YEAR = '" . $item->YearGet() . "'";
+            $updateFields.= " YEAR = '" . mysql_escape_string($item->YearGet()) . "'";
             
         if ($itemRow["BODY"] != $item->BodyGet()) {
             if ($updateFields != "")
                 $updateFields.=",";
-            $updateFields.= " BODY = '" . $item->BodyGet() . "'";
+            $updateFields.= " BODY = '" . mysql_escape_string($item->BodyGet()) . "'";
         }
         if ($itemRow["BRAND_NUMBER"] != $item->BrandNumberGet()) {
             if ($updateFields != "")
                 $updateFields.=",";
-            $updateFields.= " BRAND_NUMBER = '" . $item->BrandNumberGet() . "'";
+            $updateFields.= " BRAND_NUMBER = '" . mysql_escape_string($item->BrandNumberGet()) . "'";
         }
         if ($itemRow["HAND_DIRECTION"] != $item->HandDirectionGet()) {
             if ($updateFields != "")
                 $updateFields.=",";
-            $updateFields.= " HAND_DIRECTION = '" . $item->HandDirectionGet() . "'";
+            $updateFields.= " HAND_DIRECTION = '" . mysql_escape_string($item->HandDirectionGet()) . "'";
         }
         if ($itemRow["LINE_DIRECTION"] != $item->LineDirectionGet()) {
             if ($updateFields != "")
                 $updateFields.=",";
-            $updateFields.= " LINE_DIRECTION = '" . $item->LineDirectionGet() . "'";
+            $updateFields.= " LINE_DIRECTION = '" . mysql_escape_string($item->LineDirectionGet()) . "'";
         }
         if ($itemRow["TYPE"] != $item->TypeGet()) {
             if ($updateFields != "")
                 $updateFields.=",";
-            $updateFields.= " TYPE = '" . $item->TypeGet() . "'";
+            $updateFields.= " TYPE = '" . mysql_escape_string($item->TypeGet()) . "'";
         }
         if ($itemRow['HSA_TYPE'] != $item->HSATypeGet()) {
             if ($updateFields != "")
                 $updateFields.=",";
-            $updateFields.= " HSA_TYPE = '" . $item->HSATypeGet() . "'";
+            $updateFields.= " HSA_TYPE = '" . mysql_escape_string($item->HSATypeGet()) . "'";
         }
         
         $modelId = $this->modelGateway->FindModelByMarkAndModelNames($item->ModelGet()->MarkGet()->NameGet(), $item->ModelGet()->NameGet());
@@ -189,14 +189,14 @@ class HSAItemGateway {
     	if ($modelId==NULL)
             return NULL;
     	$conditions = "";
-    	$conditions.= " YEAR = '" . $item->YearGet() . "'";
-        $conditions.= " and BODY = '" . $item->BodyGet() . "'";
-        $conditions.= " and BRAND_NUMBER = '" . $item->BrandNumberGet() . "'";
-        $conditions.= " and HAND_DIRECTION = '" . $item->HandDirectionGet() . "'";
-        $conditions.= " and LINE_DIRECTION = '" . $item->LineDirectionGet() . "'";
-        $conditions.= " and TYPE = '" . $item->TypeGet() . "'";
+    	$conditions.= " YEAR = '" . mysql_escape_string($item->YearGet()) . "'";
+        $conditions.= " and BODY = '" . mysql_escape_string($item->BodyGet()) . "'";
+        $conditions.= " and BRAND_NUMBER = '" . mysql_escape_string($item->BrandNumberGet()) . "'";
+        $conditions.= " and HAND_DIRECTION = '" . mysql_escape_string($item->HandDirectionGet()) . "'";
+        $conditions.= " and LINE_DIRECTION = '" . mysql_escape_string($item->LineDirectionGet()) . "'";
+        $conditions.= " and TYPE = '" . mysql_escape_string($item->TypeGet()) . "'";
         $conditions.= " and MODEL_ID = '" . $modelId . "'";
-        $conditions.= " and HSA_TYPE = '" . $item->HSATypeGet() . "'";
+        $conditions.= " and HSA_TYPE = '" . mysql_escape_string($item->HSATypeGet()) . "'";
         
         $query = "select id from " . self::TABLE_NAME . " where " . $conditions;
         $dbResult = $this->db->ExecuteQuery($query);
