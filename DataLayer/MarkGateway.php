@@ -22,7 +22,7 @@ class MarkGateway {
 
     public function CreateTable() {
         $this->db->ExecuteNonQuery("drop table if exists " . HSAItemGateway::OEM_TABLE_NAME);
-	$this->db->ExecuteNonQuery("drop table if exists " . HSAItemGateway::TABLE_NAME);
+	   $this->db->ExecuteNonQuery("drop table if exists " . HSAItemGateway::TABLE_NAME);
     	$this->db->ExecuteNonQuery("drop table if exists " . ModelGateway::TABLE_NAME);
         $this->db->ExecuteNonQuery("drop table if exists " . self::TABLE_NAME);
         $this->db->ExecuteNonQuery("create table " .

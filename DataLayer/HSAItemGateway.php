@@ -25,6 +25,8 @@ class HSAItemGateway {
         $gateway = new HSAItemGateway();
         $gateway->db = $iConnection;
         $gateway->modelGateway = ModelGateway::Create($iConnection);
+        if (!$gateway->db->IsTableExists(self::TABLE_NAME))
+            $gateway->CreateTable();
         return $gateway;
     }
 

@@ -82,6 +82,11 @@ class DBMySql implements IDBConnection {
     public function RowsCount($result) {
         return mysql_num_rows($result);
     }
+
+    public function IsTableExists($tableName) {
+        $result = $this->ExecuteQuery("Show tables like '$tableName'");
+        return ($this->RowsCount($result) > 0);
+    }
 }
 
 ?>
