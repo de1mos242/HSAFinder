@@ -21,6 +21,7 @@ class HSAProductGateway {
     }
 
     public function CreateTable() {
+        $this->db->CreateDatabase();
         $this->db->ExecuteNonQuery("drop table if exists " . self::TABLE_NAME);
         $this->db->ExecuteNonQuery("create table " .
                 self::TABLE_NAME .
