@@ -6,7 +6,7 @@
  */
 interface IDBConnection {
     function InitTables();
-    static function Create($dbname, $login, $password);
+    static function Create($dbname="", $login="", $password="");
     function ExecuteNonQuery($execution_string);
     function ExecuteQuery($query);
     function StartTransaction();
