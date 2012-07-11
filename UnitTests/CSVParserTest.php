@@ -18,9 +18,9 @@ class CSVParserTest extends PHPUnit_Framework_TestCase {
 
     public function testParseString() {
         $a = "first";
-        $b = 'second value';
+        $b = '"second, value';
         $c = "third";
-        $line = $a.','.$b.','.$c;
+        $line = $a.',""'.$b.'","'.$c.'"';
         $csv = $this->fixture->ParseLine($line);
         $this->AssertEquals($a, $csv[0]);
         $this->AssertEquals($b, $csv[1]);

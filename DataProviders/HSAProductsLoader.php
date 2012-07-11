@@ -78,7 +78,7 @@ class HSAProductsLoader {
             $amount = "mega";
         }
         else {
-            throw new Exception("Unknown amount: ".$row[4]);
+            throw new Exception("Unknown amount: ".$row[4] . " for " . $row[2]);
         }
         
         $description = mb_eregi_replace("'", " ", $row[2]);
