@@ -40,6 +40,7 @@ class Controller_Product extends Controller_Base {
             $path = dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "upload" . DIRECTORY_SEPARATOR;
             //if (!move_uploaded_file($_FILES["filename"]["tmp_name"], $path.$_FILES["filename"]["name"]))
               //  $this->registry->set("upload_error", "Ошибка загрузки файла");
+            set_time_limit(3*60*60);//3 hours to parse
             $loader = HSAProductsLoader::Create($this->productGateway);
             $loader->ParseFile($_FILES["filename"]["tmp_name"]);
         } else {

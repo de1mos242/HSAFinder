@@ -37,7 +37,11 @@ class DBMySql implements IDBConnection {
     }
     
     public function ExecuteQuery($query) {
-        mysql_selectdb($this->dbname, $this->connection);
+        if (!mysql_selectdb($this->dbname, $this->connection)) {
+            $this->CreateDatabase();
+            mysql_selectdb($this->dbname, $this->connection);
+        }
+
         $result = mysql_query($query.";", $this->connection);
         if (!$result) {
             $text = "DB error. MySQL error:" . mysql_error($this->connection) . ". Query: " . $query . ".";
@@ -47,7 +51,11 @@ class DBMySql implements IDBConnection {
     }
     
     public function ExecuteNonQuery($execution_string) {
-        mysql_selectdb($this->dbname, $this->connection);
+        if (!mysql_selectdb($this->dbname, $this->connection)) {
+            $this->CreateDatabase();
+            mysql_selectdb($this->dbname, $this->connection);
+        }
+
         if (!mysql_query($execution_string.";", $this->connection)) {
             $text = "DB error. MySQL error:" . mysql_error($this->connection) . ". Query: " . $execution_string . ".";
             throw new Exception($text);

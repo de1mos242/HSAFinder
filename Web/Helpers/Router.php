@@ -80,7 +80,7 @@ class Router {
     
     private function getController(&$file, &$controller, &$action, &$args) {
         $route = (empty($_REQUEST['route'])) ? '' : $_REQUEST['route'];
-        if (empty($route)) { $route = 'index'; }
+        if (empty($route)) { $route = 'product'; }
         
         $route = trim($route, '/\\');
         $parts = explode('/', $route);
